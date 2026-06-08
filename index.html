@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Liberado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://i.imgur.com/kUc695D.gif" as="image">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 15px;
+        }
+
+        .top-indicator {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            text-align: center;
+            z-index: 1000;
+            animation: bounce 1s infinite;
+        }
+
+        .top-indicator span {
+            font-size: 50px;
+            display: block;
+            filter: drop-shadow(0 0 10px #ff3b3b);
+        }
+
+        .top-indicator p {
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: #ff3b3b;
+            text-transform: uppercase;
+            margin-top: -8px;
+            background: rgba(0,0,0,0.5);
+            padding: 2px 5px;
+            border-radius: 5px;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.1); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            margin-top: 30px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 30px 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 25px;
+            line-height: 1.2;
+        }
+
+        .tutorial-steps {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        .step-item {
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .step-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .step-num {
+            background: #ff3b3b;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+            box-shadow: 0 0 10px rgba(255, 59, 59, 0.5);
+        }
+
+        .step-content {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #eee;
+        }
+
+        .step-content b { color: #ff3b3b; }
+
+        .gif-box {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            border: 2px solid #333;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gif-box img { 
+            width: 100%; 
+            display: block; 
+            object-fit: cover;
+        }
+
+        .btn-check {
+            width: 100%;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 20px;
+            border-radius: 18px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .btn-check:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255,255,255,0.2);
+            background: #f0f0f0;
+        }
+
+        .btn-check:active {
+            transform: translateY(1px);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+            animation: modalFadeIn 0.3s ease forwards;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-card {
+            background: #111;
+            padding: 30px 20px;
+            border-radius: 25px;
+            border: 1px solid #333;
+            text-align: center;
+            width: 100%;
+            max-width: 360px;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-card h2 {
+            color: #fff;
+            font-size: 1.4rem;
+        }
+
+        .alert-text {
+            color: #ff3b3b;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 59, 59, 0.1);
+            border: 1px dashed #ff3b3b;
+            border-radius: 12px;
+            text-align: left;
+        }
+
+        .modal-description {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 25px;
+            padding: 0 10px;
+        }
+
+        .btn-final {
+            display: block;
+            background: #ff3b3b;
+            color: #fff;
+            text-decoration: none;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 59, 59, 0.4);
+        }
+
+        .btn-final:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 59, 59, 0.6);
+            background: #ff4a4a;
+        }
+
+        .btn-final:active {
+            transform: translateY(1px);
+        }
+
+        .btn-back {
+            background: transparent;
+            color: #aaa;
+            border: none;
+            margin-top: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .btn-back:hover {
+            color: #fff;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 0.7rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        @media (max-height: 700px) {
+            .container { margin-top: 10px; }
+            .top-indicator span { font-size: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-indicator">
+    <span>↗️</span>
+    <p>Clique Aqui</p>
+</div>
+
+<div class="container">
+    <div class="main-card">
+        <h1>SIGA OS PASSOS<br>PARA LIBERAR</h1>
+        
+        <div class="tutorial-steps">
+            <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-content">Toque nos <b>3 pontos</b> ou no ícone de <b>Seta</b> no canto superior direito.</div>
+            </div>
+
+            <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-content">Procure e clique na opção escrita: <b>"Abrir no Navegador"</b>.</div>
+            </div>
+
+            <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-content">Após abrir fora do aplicativo, clique no <b>Botão Branco</b> abaixo.</div>
+            </div>
+        </div>
+
+        <div class="gif-box">
+            <!-- Utilizando a imagem hosteada original para perfeita funcionalidade out of the box -->
+            <img src="https://i.imgur.com/kUc695D.gif" alt="Tutorial" width="380" height="213" loading="eager">
+        </div>
+
+        <button class="btn-check" type="button" onclick="openModal()">JÁ FIZ OS 3 PASSOS</button>
+        <p class="footer">Sistema de Verificação 2026</p>
+    </div>
+</div>
+
+<div id="modalConfirm" class="modal-overlay" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+    <div class="modal-card">
+        <h2 id="modalTitle">TEM CERTEZA?</h2>
+        
+        <div class="alert-text">
+            <b>⚠️ OBSERVAÇÃO DE ALERTA:</b><br><br>
+            Você só consegue acessar nossa <b>Surpresa Especial</b> que fiz para você se tiver feito o tutorial com certeza.
+        </div>
+
+        <p class="modal-description">
+            Se o sistema detectar que você ainda está dentro do aplicativo de terceiros, o acesso será bloqueado.
+        </p>
+        
+        <!-- O link de rastreio (UTM/campanha) foi completamente removido e limpo -->
+        <a href="https://t.me/amaeefilha_bot" id="finalLink" class="btn-final" rel="noopener">ESTOU NO NAVEGADOR</a>
+        
+        <button class="btn-back" type="button" onclick="closeModal()">Voltar e fazer o tutorial</button>
+    </div>
+</div>
+
+<script>
+    function openModal() {
+        var modal = document.getElementById('modalConfirm');
+        modal.classList.add('active'); // Adiciona classe para transição suave
+    }
+
+    function closeModal() {
+        var modal = document.getElementById('modalConfirm');
+        modal.classList.remove('active'); // Remove classe com transição suave
+        // Garantindo que após a animação de opacidade ele receba 'display: none'
+        setTimeout(function() {
+            if(!modal.classList.contains('active')) {
+                modal.style.display = 'none';
+            }
+        }, 300);
+    }
+</script>
+
+</body>
+</html>
